@@ -30,6 +30,3 @@ s.t. megoldasAruhazHossza{s in sorok}:
 
 minimize megoldasMilyenHosszuAzEpulet: megoldas;
 
-data;
-
-end;
