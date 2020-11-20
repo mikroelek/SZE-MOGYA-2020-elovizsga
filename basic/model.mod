@@ -1,9 +1,9 @@
-param nRows;
-param cashierCount;
-param cashierLength;
+param nRows integer >=0;
+param cashierCount >=0;
+param cashierLength >=0;
 
 set ProductGroups;
-param space{ProductGroups};
+param space{ProductGroups} >=0;
 
 
 set sorok := 1..nRows;
