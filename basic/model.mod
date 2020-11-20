@@ -1,33 +1,34 @@
-param nRows integer >=0;
-param cashierCount >=0;
-param cashierLength >=0;
-
+param nRows;
+set sorok:=1..nRows;
+param cashierCount;
+set penztarok:= 1..cashierCount;
+param cashierLength;
 set ProductGroups;
-param space{ProductGroups} >=0;
+param space{ProductGroups};
+
+var sorhossz{sorok};
+var ottvane{sorok,ProductGroups} binary;
+var kasszas{penztarok,sorok} binary;
+var epulethossz;
 
 
-set sorok := 1..nRows;
-set kasszak := 1..cashierCount;
+#s.t.
+s.t. EgySorEgyPenztaros{p in penztarok}:
+    sum{s in sorok} kasszas[p, s] = 1;
 
-var sorHossza{sorok} >= 0;
-var sorbanPenztar{sorok, kasszak} binary;
-var sorbanTermek{sorok, ProductGroups} binary;
-var megoldas >= 0;
+s.t. EgyTermekEgySorban{p in ProductGroups}:
+    sum{s in sorok} ottvane[s, p] = 1;
 
+s.t. Maxhossz{s in sorok}:
+    sorhossz[s] >= sum{p in ProductGroups} ottvane[s, p] * space[p] + sum{p in penztarok} kasszas[p, s] * cashierLength;
 
-s.t. sorHosszanakKiszamitasa{s in sorok}:
-	sorHossza[s] = sum{p in ProductGroups} sorbanTermek[s,p]*space[p] + sum{k in kasszak} sorbanPenztar[s,k]*cashierLength;
-	
-s.t. egyTermekEgySorbanLehetCsak{p in ProductGroups}:
-	sum{s in sorok} sorbanTermek[s,p]=1;
+s.t. LeghosszabbSor{s in sorok}:
+    epulethossz >= sorhossz[s];
 
-s.t. kasszatSorokbaFixalni{k in kasszak}:
-	sum{s in sorok} sorbanPenztar[s,k]=1;
+#min/max
+minimize leghosszabbsor:
+    epulethossz;
 
-s.t. megoldasAruhazHossza{s in sorok}:
-	megoldas >= sorHossza[s];
+solve;
+printf "%f\n",epulethossz;
 
-
-minimize megoldasMilyenHosszuAzEpulet: megoldas;
-
-;
