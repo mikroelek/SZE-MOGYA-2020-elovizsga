@@ -31,4 +31,5 @@ s.t. megoldasAruhazHossza{s in sorok}:
 minimize megoldasMilyenHosszuAzEpulet: megoldas;
 
 solve;
+printf "%f\n", megoldas;
 
